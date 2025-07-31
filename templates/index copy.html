@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DuckDuckGo & AI Search</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>DuckDuckGo + Ask AI</h1>
+  </div>
+<div class="tab-bar">
+  <div class="tab-container">
+     <p class="tab-heading">✨ Let’s start with...</p>
+    <form method="POST">
+      <input type="hidden" name="tab" value="web">
+      <button class="tab-btn {{ 'active' if tab == 'web' else '' }}" type="submit">🌐 Web Search</button>
+    </form>
+    <form method="POST">
+      <input type="hidden" name="tab" value="news">
+      <button class="tab-btn {{ 'active' if tab == 'news' else '' }}" type="submit">📰 News Search</button>
+    </form>
+    <form method="POST">
+      <input type="hidden" name="tab" value="ai">
+      <button class="tab-btn {{ 'active' if tab == 'ai' else '' }}" type="submit">🤖 Ask AI</button>
+    </form>
+  </div>
+</div>
+
+
+
+
+  <div class="search-container">
+    <form method="POST">
+      <input type="text" name="query" placeholder="Enter your query..." value="{{ query }}" required>
+      {% if tab == 'ai' %}
+        <select name="answer_type" required>
+          <option value="Brief" {% if answer_type == "Brief" %}selected{% endif %}>Brief</option>
+          <option value="Summary" {% if answer_type == "Summary" %}selected{% endif %}>Summary</option>
+          <option value="Technical Paper" {% if answer_type == "Technical Paper" %}selected{% endif %}>Technical Paper</option>
+        </select>
+      {% endif %}
+      <input type="hidden" name="tab" value="{{ tab }}">
+      <br>
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+  <div class="results">
+    {% if tab == 'web' and web_results %}
+      <h2>🔎 Web Results</h2>
+      {% for result in web_results %}
+        <div class="result-card">
+          <a href="{{ result.href }}" target="_blank" class="result-title">{{ result.title }}</a>
+          <div class="result-snippet">{{ result.body }}</div>
+          <div class="result-link"><a href="{{ result.href }}" target="_blank">{{ result.href }}</a></div>
+        </div>
+      {% endfor %}
+
+    {% elif tab == 'news' and news_results %}
+      <h2>📰 News Results</h2>
+      {% for result in news_results %}
+        <div class="result-card">
+          <a href="{{ result.url }}" target="_blank" class="result-title">{{ result.title }}</a>
+          <div class="result-meta">
+            {{ result.get('date', 'N/A') }} | {{ result.get('source', 'N/A') }}
+          </div>
+        </div>
+      {% endfor %}
+
+    {% elif tab == 'ai' and ai_result %}
+      <h2>🤖 AI Generated Response</h2>
+      <div class="ai-output">{{ ai_result | safe }}</div>
+    {% endif %}
+  </div>
+
+</body>
+</html>

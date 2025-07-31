@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Algorhythm</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='tablogo.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <div class="header">
+    <img src="{{ url_for('static', filename='logo.png') }}" class="headlogo">
+    <div class="link-container">
+      <a href="https://github.com/SushavanKarmakar20/Algorhythm.git" target="_blank" class="github-link">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" class="github-icon">
+        Source Code
+      </a>
+      <div class="icon-text">
+        <a href="https://sushavankarmakar20.github.io/my_portfolio/" target="_blank" class="portfolio-link">
+          <i class="fa-regular fa-user"></i>
+          Who am I?
+        </a>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="tab-bar">
+    <div class="tab-container">
+      <p class="tab-heading">✨ Let’s start with... </p>
+      <form method="POST">
+        <input type="hidden" name="tab" value="web">
+        <button class="tab-btn {{ 'active' if tab == 'web' else '' }}" type="submit">🌐 Web Search</button>
+      </form>
+      <form method="POST">
+        <input type="hidden" name="tab" value="news">
+        <button class="tab-btn {{ 'active' if tab == 'news' else '' }}" type="submit">📰 News Search</button>
+      </form>
+      <form method="POST">
+        <input type="hidden" name="tab" value="ai">
+        <button class="tab-btn {{ 'active' if tab == 'ai' else '' }}" type="submit">🤖 Ask AI</button>
+      </form>
+    </div>
+  </div>
+
+  <br><br>
+
+
+  <div class="search-container">
+    <form method="POST">
+      <input type="text" name="query" placeholder="Enter your query..." value="{{ query }}" required>
+      <input type="hidden" name="tab" value="{{ tab }}">
+      <br>
+      <button type="submit">Search</button>
+    </form>
+  </div>
+  
+
+  <div class="results">
+    {% if tab == 'web' and web_results %}
+      <h2>🔎 Web Results</h2>
+      {% for result in web_results %}
+        <div class="result-card">
+          <a href="{{ result.href }}" target="_blank" class="result-title">{{ result.title }}</a>
+          <div class="result-snippet">{{ result.body }}</div>
+          <div class="result-link"><a href="{{ result.href }}" target="_blank">{{ result.href }}</a></div>
+        </div>
+      {% endfor %}
+
+    {% elif tab == 'news' and news_results %}
+      <h2>📰 News Results</h2>
+      {% for result in news_results %}
+        <div class="result-card">
+          <a href="{{ result.url }}" target="_blank" class="result-title">{{ result.title }}</a>
+          <div class="result-meta">
+            {{ result.get('date', 'N/A') }} | {{ result.get('source', 'N/A') }}
+          </div>
+        </div>
+      {% endfor %}
+
+    {% elif tab == 'ai' and ai_result %}
+      <h2>🤖 AI Generated Response</h2>
+      <div class="ai-output">{{ ai_result | safe }}</div>
+    {% endif %}
+  </div>
+
+</body>
+</html>
